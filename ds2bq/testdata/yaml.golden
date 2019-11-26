@@ -1,0 +1,9 @@
+- schedule: 16 16 * * *
+  uri: https://{YOUR_DS2BQ_CLOUD_RUN_URI}/api/v1/datastore-export/
+  body:
+    projectID: datastore-project
+    outputGCSFilePath: gs://datastore-project-ds2bq-test
+    allKinds: true
+    bqLoadProjectID: datastore-project
+    bqLoadDatasetID: ds2bq_test
+  oidcServiceAccountEmail: scheduler@$DS2BQ_PROJECT_ID.iam.gserviceaccount.com
