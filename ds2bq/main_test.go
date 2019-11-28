@@ -13,8 +13,12 @@ import (
 func TestOutputYaml(t *testing.T) {
 	var jobs []*SchedulerJob
 	job := &SchedulerJob{
-		Schedule: "16 16 * * *",
-		URI:      "https://{YOUR_DS2BQ_CLOUD_RUN_URI}/api/v1/datastore-export/",
+		Name:        "test1",
+		ProjectID:   "hoge-project",
+		Location:    "asia-northeast1",
+		Description: "sample schedule",
+		Schedule:    "16 16 * * *",
+		URI:         "https://{YOUR_DS2BQ_CLOUD_RUN_URI}/api/v1/datastore-export/",
 		Body: &Config{
 			ProjectID:         "datastore-project",
 			OutputGCSFilePath: "gs://datastore-project-ds2bq-test",
@@ -49,6 +53,9 @@ func TestParseYaml(t *testing.T) {
 
 	job := jobs[0]
 
+	if e, g := "test1", job.Name; e != g {
+		t.Errorf("Name want %s got %s", e, g)
+	}
 	if e, g := "16 16 * * *", job.Schedule; e != g {
 		t.Errorf("Schedule want %s got %s", e, g)
 	}

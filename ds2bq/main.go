@@ -7,8 +7,13 @@ import (
 )
 
 type SchedulerJob struct {
-	Schedule                string  `json:"schedule"`
+	Name                    string  `json:"name"`
+	ProjectID               string  `json:"projectID"`
+	Location                string  `json:"location"`
+	Description             string  `json:"description"`
 	URI                     string  `json:"uri"`
+	Schedule                string  `json:"schedule"`
+	Timezone                string  `json:"timezone"`
 	Body                    *Config `json:"messageBody"`
 	OIDCServiceAccountEmail string  `json:"oidcServiceAccountEmail" yaml:"oidcServiceAccountEmail"`
 }
