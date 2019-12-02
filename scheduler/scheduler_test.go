@@ -3,8 +3,10 @@ package scheduler
 import (
 	"context"
 	"fmt"
+	"reflect"
 	"testing"
 
+	"github.com/google/uuid"
 	"google.golang.org/genproto/googleapis/cloud/scheduler/v1"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -34,7 +36,7 @@ func TestClient_Update(t *testing.T) {
 					},
 				},
 			},
-			Schedule: "16 16 * * *",
+			Schedule: "16 16 1 * *",
 			TimeZone: "Asia/Tokyo",
 		},
 		UpdateMask: nil,
@@ -49,16 +51,17 @@ func TestClient_Update(t *testing.T) {
 }
 
 func TestClient_Upsert(t *testing.T) {
+	name := uuid.New().String()
 	req := &UpsertJobRequest{
 		ProjectID:   "gcpug-ds2bq-dev",
 		Location:    "asia-northeast1",
-		Name:        "hoge",
+		Name:        name,
 		Description: "unit test sample",
-		Schedule:    "16 16 * * *",
+		Schedule:    "16 16 1 * *",
 		TimeZone:    "Asia/Tokyo",
 		Target: &JobHttpTarget{
 			Uri:                "https://gcpug-ds2bq-tf572eohna-an.a.run.app/api/v1/datastore-export/",
-			HttpMethod:         scheduler.HttpMethod_POST,
+			HttpMethod:         scheduler.HttpMethod_GET,
 			Headers:            nil,
 			Body:               nil,
 			OidcServiceAccount: "scheduler@gcpug-ds2bq-dev.iam.gserviceaccount.com",
@@ -70,9 +73,94 @@ func TestClient_Upsert(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	job, err := c.Upsert(ctx, req)
+	_, err = c.Upsert(ctx, req)
 	if err != nil {
 		t.Fatal(err)
 	}
-	fmt.Printf("%+v", job)
+	{
+		req.Schedule = "20 20 1 * *"
+		job, err := c.Upsert(ctx, req)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if e, g := req.Schedule, job.Schedule; e != g {
+			t.Errorf("Schedule want %v got %v", e, g)
+		}
+	}
+	{
+		req.TimeZone = "UTC"
+		job, err := c.Upsert(ctx, req)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if e, g := req.TimeZone, job.TimeZone; e != g {
+			t.Errorf("TimeZone want %v got %v", e, g)
+		}
+	}
+	{
+		req.Description = "hello scheduler"
+		job, err := c.Upsert(ctx, req)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if e, g := req.Description, job.Description; e != g {
+			t.Errorf("Description want %v got %v", e, g)
+		}
+	}
+	{
+		req.Target.Uri = "https://gcpug-ds2bq-tf572eohna-an.a.run.app/api/v1/datastore-export/?hoge=fuga"
+		job, err := c.Upsert(ctx, req)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if e, g := req.Target.Uri, job.GetHttpTarget().Uri; e != g {
+			t.Errorf("Target.Uri want %v got %v", e, g)
+		}
+		if e, g := req.Target.Uri, job.GetHttpTarget().GetOidcToken().Audience; e != g {
+			t.Errorf("Target.OidcToken.Audience want %v got %v", e, g)
+		}
+	}
+	{
+		req.Target.HttpMethod = scheduler.HttpMethod_POST
+		job, err := c.Upsert(ctx, req)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if e, g := req.Target.HttpMethod, job.GetHttpTarget().HttpMethod; e != g {
+			t.Errorf("Target.HttpMethod want %v got %v", e, g)
+		}
+	}
+	{
+		m := make(map[string]string)
+		m["X-Hoge"] = "hoge"
+		req.Target.Headers = m
+		job, err := c.Upsert(ctx, req)
+		if err != nil {
+			t.Fatal(err)
+		}
+		m["User-Agent"] = "Google-Cloud-Scheduler" // defaultで入るものを比較する時に合わせるために追加
+		if e, g := req.Target.Headers, job.GetHttpTarget().Headers; !reflect.DeepEqual(e, g) {
+			t.Errorf("Target.Headers want %v got %v", e, g)
+		}
+	}
+	{
+		req.Target.Body = []byte(`{"hoge":"fuga"}`)
+		job, err := c.Upsert(ctx, req)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if e, g := req.Target.Body, job.GetHttpTarget().GetBody(); !reflect.DeepEqual(e, g) {
+			t.Errorf("Target.Body want %v got %v", string(e), string(g))
+		}
+	}
+	{
+		req.Target.OidcServiceAccount = "scheduler2@gcpug-ds2bq-dev.iam.gserviceaccount.com"
+		job, err := c.Upsert(ctx, req)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if e, g := req.Target.OidcServiceAccount, job.GetHttpTarget().GetOidcToken().ServiceAccountEmail; !reflect.DeepEqual(e, g) {
+			t.Errorf("Target.OidcServiceAccount want %v got %v", string(e), string(g))
+		}
+	}
 }

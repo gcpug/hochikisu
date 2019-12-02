@@ -39,7 +39,7 @@ func (req *UpsertJobRequest) CreateJobRequest() (*scheduler.CreateJobRequest, er
 	return &scheduler.CreateJobRequest{
 		Parent: fmt.Sprintf("projects/%s/locations/%s", req.ProjectID, req.Location),
 		Job: &scheduler.Job{
-			Name:        fmt.Sprintf("projects/%s/locations/%s/jobs/%s", req.ProjectID, req.Location, req.Name),
+			Name:        CreateJobName(req.ProjectID, req.Location, req.Name),
 			Description: req.Description,
 			Target:      req.Target.JobHttpTarget(),
 			Schedule:    req.Schedule,
@@ -54,14 +54,14 @@ func (req *UpsertJobRequest) UpdateJobRequest() (*scheduler.UpdateJobRequest, er
 	}
 	return &scheduler.UpdateJobRequest{
 		Job: &scheduler.Job{
-			Name:        fmt.Sprintf("projects/%s/locations/%s/jobs/%s", req.ProjectID, req.Location, req.Name),
+			Name:        CreateJobName(req.ProjectID, req.Location, req.Name),
 			Description: req.Description,
 			Target:      req.Target.JobHttpTarget(),
 			Schedule:    req.Schedule,
 			TimeZone:    req.TimeZone,
 		},
 		UpdateMask: &field_mask.FieldMask{
-			Paths: []string{"description"},
+			Paths: []string{"schedule", "time_zone", "description", "http_target.uri", "http_target.http_method", "http_target.headers", "http_target.body", "http_target.oidc_token.service_account_email", "http_target.oidc_token.audience"},
 		},
 	}, nil
 }
@@ -71,6 +71,7 @@ func (t *JobHttpTarget) JobHttpTarget() *scheduler.Job_HttpTarget {
 		HttpTarget: &scheduler.HttpTarget{
 			Uri:        t.Uri,
 			HttpMethod: t.HttpMethod,
+			Headers:    t.Headers,
 			Body:       t.Body,
 			AuthorizationHeader: &scheduler.HttpTarget_OidcToken{
 				OidcToken: &scheduler.OidcToken{
@@ -133,4 +134,8 @@ func (c *Client) Update(ctx context.Context, req *scheduler.UpdateJobRequest) (*
 		return nil, err
 	}
 	return job, nil
+}
+
+func CreateJobName(projectID string, location string, name string) string {
+	return fmt.Sprintf("projects/%s/locations/%s/jobs/%s", projectID, location, fmt.Sprintf("gcpug-hochikisu-%s", name))
 }

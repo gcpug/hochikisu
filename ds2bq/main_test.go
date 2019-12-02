@@ -18,6 +18,7 @@ func TestOutputYaml(t *testing.T) {
 		Location:    "asia-northeast1",
 		Description: "sample schedule",
 		Schedule:    "16 16 * * *",
+		Timezone:    "Asia/Tokyo",
 		URI:         "https://{YOUR_DS2BQ_CLOUD_RUN_URI}/api/v1/datastore-export/",
 		Body: &Config{
 			ProjectID:         "datastore-project",

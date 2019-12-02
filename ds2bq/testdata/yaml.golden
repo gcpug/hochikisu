@@ -1,7 +1,10 @@
 - name: test1
+  projectid: hoge-project
+  location: asia-northeast1
   description: sample schedule
   uri: https://{YOUR_DS2BQ_CLOUD_RUN_URI}/api/v1/datastore-export/
   schedule: 16 16 * * *
+  timezone: Asia/Tokyo
   body:
     projectID: datastore-project
     outputGCSFilePath: gs://datastore-project-ds2bq-test
