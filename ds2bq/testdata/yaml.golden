@@ -1,0 +1,14 @@
+- name: ds2bq-test1
+  projectid: gcpug-ds2bq-dev
+  location: asia-northeast1
+  description: sample schedule
+  uri: "https://gcpug-ds2bq-tf572eohna-an.a.run.app/api/v1/datastore-export/"
+  schedule: 16 16 1 * *
+  timezone: Asia/Tokyo
+  body:
+    projectID: datastore-project
+    outputGCSFilePath: gs://datastore-project-ds2bq-test
+    allKinds: true
+    bqLoadProjectID: datastore-project
+    bqLoadDatasetID: ds2bq_test
+  oidcServiceAccountEmail: "scheduler@gcpug-ds2bq-dev.iam.gserviceaccount.com"
