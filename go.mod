@@ -18,8 +18,11 @@ require (
 	github.com/hashicorp/golang-lru v0.5.3 // indirect
 	github.com/jstemmer/go-junit-report v0.9.1 // indirect
 	github.com/kr/pty v1.1.8 // indirect
+	github.com/mitchellh/go-homedir v1.1.0
 	github.com/morikuni/failure v0.12.0
 	github.com/rogpeppe/go-internal v1.5.0 // indirect
+	github.com/spf13/cobra v0.0.5
+	github.com/spf13/viper v1.5.0
 	github.com/stretchr/objx v0.2.0 // indirect
 	go.opencensus.io v0.22.2 // indirect
 	golang.org/x/crypto v0.0.0-20191122220453-ac88ee75c92c // indirect
