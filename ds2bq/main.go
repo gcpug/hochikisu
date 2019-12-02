@@ -2,7 +2,10 @@ package ds2bq
 
 import (
 	"context"
+	"encoding/json"
 
+	"github.com/gcpug/hochikisu/scheduler"
+	cs "google.golang.org/genproto/googleapis/cloud/scheduler/v1"
 	"gopkg.in/yaml.v2"
 )
 
@@ -32,4 +35,26 @@ func ParseYaml(ctx context.Context, data []byte) ([]*SchedulerJob, error) {
 		return nil, err
 	}
 	return jobs, nil
+}
+
+func (job *SchedulerJob) CreateUpsertJobRequest() (*scheduler.UpsertJobRequest, error) {
+	body, err := json.Marshal(job.Body)
+	if err != nil {
+		return nil, err
+	}
+	return &scheduler.UpsertJobRequest{
+		ProjectID:   job.ProjectID,
+		Location:    job.Location,
+		Name:        job.Name,
+		Description: job.Description,
+		Schedule:    job.Schedule,
+		TimeZone:    job.Timezone,
+		Target: &scheduler.JobHttpTarget{
+			Uri:                job.URI,
+			HttpMethod:         cs.HttpMethod_POST,
+			Headers:            nil, // Headerのユースケースがないので、設定していない
+			Body:               body,
+			OidcServiceAccount: job.OIDCServiceAccountEmail,
+		},
+	}, nil
 }
