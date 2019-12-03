@@ -22,11 +22,16 @@ type SchedulerJob struct {
 }
 
 type Config struct {
-	ProjectID         string `json:"projectID" yaml:"projectID"`
-	OutputGCSFilePath string `json:"outputGCSFilePath" yaml:"outputGCSFilePath"`
-	AllKinds          bool   `json:"allKinds" yaml:"allKinds"`
-	BQLoadProjectID   string `json:"bqLoadProjectID" yaml:"bqLoadProjectID"`
-	BQLoadDatasetID   string `json:"bqLoadDatasetID" yaml:"bqLoadDatasetID"`
+	ProjectID         string   `json:"projectID" yaml:"projectID"`
+	OutputGCSFilePath string   `json:"outputGCSFilePath" yaml:"outputGCSFilePath"`
+	AllKinds          bool     `json:"allKinds" yaml:"allKinds"`
+	BQLoadProjectID   string   `json:"bqLoadProjectID" yaml:"bqLoadProjectID"`
+	BQLoadDatasetID   string   `json:"bqLoadDatasetID" yaml:"bqLoadDatasetID"`
+	Kinds             []string `json:"kinds"`
+	NamespaceIDs      []string `json:"namespaceIds"`
+	IgnoreKinds       []string `json:"ignoreKinds"`
+	IgnoreBQLoadKinds []string `json:"ignoreBQLoadKinds"`
+	MaxRetryCount     int      `json:"maxRetryCount"`
 }
 
 func ParseYaml(ctx context.Context, data []byte) ([]*SchedulerJob, error) {
