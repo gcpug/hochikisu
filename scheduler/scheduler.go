@@ -3,6 +3,7 @@ package scheduler
 import (
 	"context"
 	"fmt"
+	"github.com/googleapis/gax-go/v2"
 
 	cs "cloud.google.com/go/scheduler/apiv1"
 	"github.com/morikuni/failure"
@@ -89,6 +90,7 @@ type Client struct {
 }
 
 func NewClient(ctx context.Context, projectID string) (*Client, error) {
+	fmt.Printf("Client Quota ProjectID = %s\n", projectID)
 	client, err := cs.NewCloudSchedulerClient(ctx, option.WithQuotaProject(projectID))
 	if err != nil {
 		return nil, err
@@ -122,6 +124,7 @@ func (c *Client) Upsert(ctx context.Context, req *UpsertJobRequest) (*scheduler.
 }
 
 func (c *Client) Create(ctx context.Context, req *scheduler.CreateJobRequest) (*scheduler.Job, error) {
+	fmt.Printf("CreateJob: %+v\n", req)
 	job, err := c.C.CreateJob(ctx, req)
 	if err != nil {
 		return nil, err
@@ -130,6 +133,7 @@ func (c *Client) Create(ctx context.Context, req *scheduler.CreateJobRequest) (*
 }
 
 func (c *Client) Update(ctx context.Context, req *scheduler.UpdateJobRequest) (*scheduler.Job, error) {
+	fmt.Printf("UpdateJob: %+v\n", req)
 	job, err := c.C.UpdateJob(ctx, req)
 	if err != nil {
 		return nil, err
