@@ -6,6 +6,7 @@ import (
 
 	cs "cloud.google.com/go/scheduler/apiv1"
 	"github.com/morikuni/failure"
+	"google.golang.org/api/option"
 	"google.golang.org/genproto/googleapis/cloud/scheduler/v1"
 	"google.golang.org/genproto/protobuf/field_mask"
 	"google.golang.org/grpc/codes"
@@ -87,8 +88,8 @@ type Client struct {
 	C *cs.CloudSchedulerClient
 }
 
-func NewClient(ctx context.Context) (*Client, error) {
-	client, err := cs.NewCloudSchedulerClient(ctx)
+func NewClient(ctx context.Context, projectID string) (*Client, error) {
+	client, err := cs.NewCloudSchedulerClient(ctx, option.WithQuotaProject(projectID))
 	if err != nil {
 		return nil, err
 	}
