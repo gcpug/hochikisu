@@ -11,7 +11,7 @@ import (
 
 type SchedulerJob struct {
 	Name                    string  `json:"name"`
-	ProjectID               string  `json:"projectID"`
+	ProjectID               string  `json:"projectId" yaml:"projectId"`
 	Location                string  `json:"location"`
 	Description             string  `json:"description"`
 	URI                     string  `json:"uri"`
