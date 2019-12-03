@@ -1,20 +1,19 @@
-- name: ds2bq-test1
+- name: test1
   projectid: hoge-project
   location: asia-northeast1
   description: sample schedule
-  uri: https://gcpug-ds2bq-tf572eohna-an.a.run.app/api/v1/datastore-export/
+  uri: https://{YOUR_DS2BQ_CLOUD_RUN_URI}/api/v1/datastore-export/
   schedule: 16 16 * * *
   timezone: Asia/Tokyo
   body:
-    projectID: datastore-project
-    outputGCSFilePath: gs://datastore-project-ds2bq-test
+    projectId: datastore-project
     allKinds: true
-    bqLoadProjectID: datastore-project
-    bqLoadDatasetID: ds2bq_test
     kinds: []
-    namespaceids: []
-    ignorekinds:
+    namespaceIds: []
+    ignoreKinds:
     - hoge
-    ignorebqloadkinds: []
-    maxretrycount: 0
-  oidcServiceAccountEmail: scheduler@gcpug-ds2bq-dev.iam.gserviceaccount.com
+    ignoreBQLoadKinds: []
+    outputGCSFilePath: gs://datastore-project-ds2bq-test
+    bqLoadProjectId: datastore-project
+    bqLoadDatasetId: ds2bq_test
+  oidcServiceAccountEmail: scheduler@$DS2BQ_PROJECT_ID.iam.gserviceaccount.com
