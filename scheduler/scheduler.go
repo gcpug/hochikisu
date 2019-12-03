@@ -3,7 +3,6 @@ package scheduler
 import (
 	"context"
 	"fmt"
-	"github.com/googleapis/gax-go/v2"
 
 	cs "cloud.google.com/go/scheduler/apiv1"
 	"github.com/morikuni/failure"
