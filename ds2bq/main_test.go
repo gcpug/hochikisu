@@ -24,6 +24,7 @@ func TestOutputYaml(t *testing.T) {
 			ProjectID:         "datastore-project",
 			OutputGCSFilePath: "gs://datastore-project-ds2bq-test",
 			AllKinds:          true,
+			IgnoreKinds:       []string{"hoge"},
 			BQLoadProjectID:   "datastore-project",
 			BQLoadDatasetID:   "ds2bq_test",
 		},
