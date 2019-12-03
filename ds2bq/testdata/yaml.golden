@@ -1,5 +1,5 @@
 - name: test1
-  projectid: hoge-project
+  projectId: hoge-project
   location: asia-northeast1
   description: sample schedule
   uri: https://{YOUR_DS2BQ_CLOUD_RUN_URI}/api/v1/datastore-export/
