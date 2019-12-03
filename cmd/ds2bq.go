@@ -40,14 +40,14 @@ func ds2bqDeploy(ctx context.Context, cfgFile string) {
 		os.Exit(1)
 	}
 
-	c, err := scheduler.NewClient(ctx)
-	if err != nil {
-		fmt.Println("failed scheduler new client.")
-		fmt.Println(err)
-		os.Exit(1)
-	}
-
 	for _, job := range jobs {
+		c, err := scheduler.NewClient(ctx, job.ProjectID)
+		if err != nil {
+			fmt.Println("failed scheduler new client.")
+			fmt.Println(err)
+			os.Exit(1)
+		}
+
 		req, err := job.CreateUpsertJobRequest()
 		if err != nil {
 			fmt.Println("failed create upsert job request.")
