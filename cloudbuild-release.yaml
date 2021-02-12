@@ -4,6 +4,6 @@ steps:
     args: ['build', '.']
   - name: 'gcr.io/kaniko-project/executor:v1.3.0'
     args:
-      - --destination=asia-northeast1-docker.pkg.dev/$PROJECT_ID/hochikisu/$BRANCH_NAME:$TAG_NAME-alpine
+      - --destination=asia-northeast1-docker.pkg.dev/$PROJECT_ID/hochikisu/master:$TAG_NAME-alpine
       - --cache=true
       - --cache-ttl=6h
